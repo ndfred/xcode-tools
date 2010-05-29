@@ -7,6 +7,8 @@ Update or create an Apple XCode project localization strings file.
 TODO: handle localization domains
 '''
 
+from __future__ import with_statement
+
 import sys
 import os
 import os.path
