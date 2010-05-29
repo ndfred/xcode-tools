@@ -29,6 +29,7 @@ class MobileProvision(object):
         self.expiration_date = None
         self.time_to_live = 0
         self.devices_udids = []
+        self.is_appstore = False
 
         if provision_file_path:
             self.set_from_provision_file(provision_file_path)
@@ -68,7 +69,10 @@ class MobileProvision(object):
         self.creation_date = provision_dict['CreationDate']
         self.expiration_date = provision_dict['ExpirationDate']
         self.time_to_live = provision_dict['TimeToLive']
-        self.devices_udids = provision_dict['ProvisionedDevices']
+
+        devices_udids = provision_dict.get('ProvisionedDevices', None)
+        self.devices_udids = devices_udids or []
+        self.is_appstore = (devices_udids is None)
 
     def __str__(self):
         return self.name
@@ -105,10 +109,15 @@ def main():
     logging.debug('Creation date: %s', mobile_provision.creation_date)
     logging.debug('Expiration date: %s', mobile_provision.expiration_date)
     logging.debug('Time to live: %s', mobile_provision.time_to_live)
-    logging.debug('Devices UDIDs:')
 
-    for udid in mobile_provision.devices_udids:
-        logging.debug(' * %s', udid)
+    if mobile_provision.is_appstore:
+        logging.debug('AppStore: yes')
+    else:
+        logging.debug('AppStore: no')
+        logging.debug('Devices UDIDs:')
+
+        for udid in mobile_provision.devices_udids:
+            logging.debug(' * %s', udid)
 
     return 0
 
